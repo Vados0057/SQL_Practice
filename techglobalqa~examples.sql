@@ -211,7 +211,48 @@ SELECT ROUND(AVG(salary)) FROM employees;
 
 
 
+SELECT COUNT(*) FROM employees
+WHERE LENGTH(first_name) > 4;
 
+SELECT distinct job_id FROM employees;
+
+/*
+•Write a query to count all unique region ids under the 
+countries table
+*/
+
+SELECT count(distinct region_id) FROM countries;
+
+
+SELECT MAX(salary) as "Maxsalary", job_id, count(job_id) as "Number Of Employees" from employees
+GROUP BY job_id
+ORDER BY MAX(salary) DESC;
+
+
+SELECT count(*) as "Amount Of Employees", job_id from employees
+GROUP BY job_id;
+
+
+SELECT count(first_name) FROM employees
+GROUP BY manager_id
+HAVING manager_id IS NOT null;
+
+
+------------------------HAVING----------------------
+
+SELECT job_id FROM employees
+GROUP BY job_id
+HAVING count(job_id) = 2;
+
+
+SELECT count(*) FROM employees
+GROUP BY manager_id
+HAVING manager_id IS NOT null;
+
+SELECT manager_id, min(salary) from employees
+GROUP BY manager_id
+HAVING manager_id IS NOT null AND min(salary) > 6000
+ORDER BY min(salary) DESC;
 
 
 
