@@ -256,6 +256,275 @@ ORDER BY min(salary) DESC;
 
 
 
+-----------------------------------PRACTICE-------------------------------------
+
+
+--Write a query to get number of employees for same manager id which is not null and order by manager id.
+
+SELECT manager_id, count(*) FROM employees
+HAVING manager_id IS NOT null
+GROUP BY manager_id
+ORDER BY manager_id;
+
+--Write a query to get number of employees for same job id and order by number of employees it is found.
+
+SELECT job_id, count(*)  FROM employees
+GROUP BY job_id
+order by count(*);
+
+--Write a query to get max salary for each department id which is not null.
+
+SELECT MAX(salary), department_id FROM employees
+WHERE department_id IS NOT null
+GROUP BY department_id;
+
+--Write a query to get min salary for each department id that has min salary more than 5000 and department is not null.
+
+SELECT MIN(salary), department_id FROM employees
+GROUP BY department_id
+HAVING MIN(salary) > 5000
+AND department_id IS NOT null;
+
+--Write a query to get sum of salaries for each job id and order by sum ascending.
+
+SELECT sum(salary),job_id FROM employees
+GROUP BY job_id
+ORDER BY sum(salary) ASC;
+
+--Write a query to get max of sum of salaries for each job id.
+
+SELECT max(sum(salary)) FROM employees
+GROUP BY job_id;
+
+--Write a query to group employees by their first name’s first letter and get the number of employees for each group and order by the numbers that are found.
+
+SELECT SUBSTR(first_name, 1, 1), count(*) from employees
+GROUP BY SUBSTR(first_name, 1, 1);
+
+
+
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~--
+-----------------------------------SUBQUERIES-----------------------------------
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~--
+
+
+select first_name from employees
+where salary=(select max(salary) from employees);
+
+SELECT * FROM employees
+where department_id = 10;
+
+SELECT * FROM employees
+WHERE department_id = (select department_id FROM departments WHERE department_name = 'Administration');
+
+SELECT * FROM employees
+where department_id IN (select department_id from departments);
+
+select * FROM employees
+where deraprtment_id in (select location_id from departments where department_id in(10,20));
+
+
+SELECT job_id, first_name, (select last_name from employees) from employees; --WRONG
+
+
+SELECT job_id, first_name, (select job_id from employees where first_name = 'Ellen') from employees;
+
+
+
+
+select* from employees;
+
+--Write a query to get employees first_name and salary who makes more than employee who has employee_id 121 and then order by salary ascending.
+
+SELECT first_name, salary FROM employees
+where salary >= (select salary from employees 
+WHERE employee_id = 121)
+order by salary;
+
+--Write a query to get employees first_name, department_id who works in same department with employee who has employee_id 150.
+
+SELECT first_name, department_id FROM employees
+WHERE department_id in (select department_id FROM employees WHERE employee_id = 150);
+
+--Write a query to find second largest salary.
+
+SELECT MAX(SALARY) FROM Employees 
+WHERE SALARY < (SELECT MAX(SALARY) FROM Employees );
+
+--THIRD LARGEST SALARY
+SELECT MAX(SALARY) FROM Employees 
+WHERE SALARY < (SELECT MAX(SALARY) FROM Employees 
+where  salary  < (SELECT MAX(SALARY) FROM Employees));
+
+--Write a query to get name of employees who is making second largest salary.
+
+select first_name, salary from employees
+ WHERE salary = (select max(salary) from employees
+ where salary < (select max(salary) from employees));
+
+--Write a query to get number of postal code under same countries from locations table.
+
+SELECT COUNT(postal_code), country_id from locations
+GROUP BY country_id;
+
+--Write a query to get number of postal code under same countries from locations table if their count is more than 1.
+
+SELECT COUNT(postal_code), country_id from locations
+GROUP BY country_id
+HAVING count(postal_code) > 1;
+
+
+--Write a query to get all employees who is making more than average salary and order by salary.
+
+SELECT first_name, salary FROM employees
+WHERE salary > (SELECT AVG(salary) from employees)
+ORDER BY salary;
+
+--Write a query to get all cities which have same state with Toronto from locations table.
+
+SELECT city from locations
+WHERE state_province in (SELECT state_province FROM locations WHERE city = 'Toronto');
+
+--Write a query to find the employee who is making second lowest salary.
+
+select min(salary) from employees
+WHERE salary > (select min(salary) from employees);
+
+select first_name, salary from employees
+ WHERE salary = (select MIN(salary) from employees
+ where salary > (select MIN(salary) from employees));
+ 
+
+
+
+/*
+1. Write a query to display the name (first name and last name) for those employees who gets more salary than the employee whose ID is 163.
+2. Write a query to display the name (first name and last name), salary, department id, job id for those employees who works in the same designation as the employee works whose id is 169.
+3. Write a query to display the name (first name and last name), salary, department id for those employees who earn such amount of salary which is the smallest salary of any of the departments.
+4. Write a query to display the employee id, employee name (first name and last name) for all employees who earn more than the average salary.
+5. Write a query to display the employee name (first name and last name), employee id and salary of all employees who report to Payam.
+6. Write a query to display the department number, name (first name and last name), job_id and department name for all employees in the Finance department.
+7. Write a query to display all the information of an employee whose salary and reporting person id is 3000 and 121, respectively.
+8. Display all the information of an employee whose id is any of the number 134, 159 and 183.
+9. Write a query to display all the information of the employees whose salary is within the range 1000 and 3000.
+10. Write a query to display all the information of the employees whose salary is within the range of smallest salary and 2500.
+*/
+
+--1. Write a query to display the name (first name and last name) for those employees who gets more salary than the employee whose ID is 163.
+
+SELECT first_name || ' ' || last_name as "NAME", salary FROM employees
+WHERE salary > (SELECT salary FROM employees 
+WHERE employee_id = 163);
+
+--2. Write a query to display the name (first name and last name), salary, department id, job id for those employees who works in the same designation as the employee works whose id is 169.
+
+SELECT first_name || ' ' || last_name as "NAME", salary, department_id, job_id FROM employees
+WHERE job_id = (SELECT job_id FROM employees
+WHERE employee_id = 169);
+
+
+--3. Write a query to display the name (first name and last name), salary, department id for those employees who earn such amount of salary which is the smallest salary of any of the departments.
+
+SELECT first_name || ' ' || last_name as "NAME", salary, department_id, job_id FROM employees
+WHERE salary = (SELECT min(salary) from employees);
+
+
+--4. Write a query to display the employee id, employee name (first name and last name) for all employees who earn more than the average salary.
+SELECT employee_id, first_name || ' ' || last_name as "NAME" FROM employees
+WHERE salary > (SELECT AVG(salary) from employees);
+
+--5. Write a query to display the employee name (first name and last name), employee id and salary of all employees who report to Payam.
+--use manager id
+SELECT first_name || ' ' || last_name as "NAME", employee_id, salary FROM employees
+WHERE manager_id = (SELECT employee_id FROM employees 
+where first_name = 'Payam');
+
+select* from departments;
+select * from employees;
+
+--6. Write a query to display the department number, name (first name and last name), job_id and department name for all employees in the Finance department.
+SELECT department_id, first_name || ' ' || last_name as "NAME", job_id FROM employees
+WHERE department_id = (SELECT department_id from departments 
+where department_name = 'Finance');
+
+--7. Write a query to display all the information of an employee whose salary and reporting person id is 3000 and 121, respectively.
+
+SELECT * from employees
+WHERE salary = 3000
+and manager_id = 121;
+
+--8. Display all the information of an employee whose id is any of the number 134, 159 and 183.
+
+SELECT * FROM employees
+WHERE employee_id in (134,159,183);
+
+--9. Write a query to display all the information of the employees whose salary is within the range 1000 and 3000.
+
+SELECT * from employees
+where salary between 1000 and 3000;
+
+--10. Write a query to display all the information of the employees whose salary is within the range of smallest salary and 2500.
+
+SELect * from employees 
+where salary between (Select min(salary) from employees) and 2500;
+
+
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~--
+-------------------------------------JOINS--------------------------------------
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~--
+
+SELECT *FROM employees;
+SELECT * FROM departments;
+
+
+SELECT * FROM employees e inner join departments d
+ON e.department_id = d.department_id;
+
+SELECT * FROM employees e full outer join departments d
+ON e.department_id = d.department_id;
+
+SELECT * FROM employees e right join departments d
+ON e.department_id = d.department_id;
+
+
+SELECT * FROM employees e left join departments d
+ON e.department_id = d.department_id;
+
+SELECT * FROM employees e INNER JOIN jobs j
+ON e.job_id = j.job_id;
+
+
+SELECT * FROM employees e INNER JOIN job_history jh
+ON e.job_id = jh.job_id;
+
+
+SELECT * FROM employees e FULL OUTER JOIN job_history jh
+ON e.employee_id = jh.employee_id;
+
+SELECT country_name, country_id, region_name FROM countries c INNER JOIN regions r
+ON c.region_id = r.region_id;
+
+SELECT e.last_name, e.email, j.job_title FROM employees e INNER JOIN jobs j
+ON e.job_id = j.job_id;
+
+
+
+
+SELECT e.first_name, e.last_name, j.job_title, d.department_name FROM employees e INNER JOIN jobs j
+ON j.job_id = e.job_id
+JOIN departments d
+ON d.department_id = e.department_id;
+
+
+-- SELF JOIN
+
+SELECT e.first_name as employee, m.first_name as manager FROM employees e join employees m
+ON e.employee_id = m.manager_id;
+
+
+SELECT e.first_name, e.salary, m.first_name , m.salary  FROM employees e join employees m
+ON e.manager_id = m.employee_id
+where m.salary < e.salary;
 
 
 

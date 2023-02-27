@@ -149,7 +149,6 @@ dollars.
 
 SELECT first_name, last_name, TRUNC(salary/1000) * 1000 FROM employees;
 
-
 SELECT first_name, last_name,salary FROM employees;
 
 /*
@@ -166,7 +165,7 @@ concatenated string of the first name, a comma, and the last name of
 all employees
 */
 
-SELECT first_name, last_name, first_name || ',' || last_name FROM employees;
+SELECT first_name, last_name, first_name || ',' || last_name as "FIRST AND LAST NAME" FROM employees;
 
 /*
 21. Write a query to display the first name, last name, and the first 
@@ -195,7 +194,7 @@ SELECT first_name, last_name, LENGTH(last_name) FROM employees;
 three characters of the last name of all employees.
 */
 
-SELECT first_name, last_name, SUBSTR(last_name, 1, 3) FROM employees;
+SELECT first_name, last_name, SUBSTR(last_name, 1, 3) as "FIRST 3 IN LAST NAME" FROM employees;
 
 /*
 25. Write a query to display the first name, last name, and the 
